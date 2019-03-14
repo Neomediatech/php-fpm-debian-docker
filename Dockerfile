@@ -16,7 +16,8 @@ RUN echo $TZ > /etc/timezone && \
     echo "ping.path = /ping" >> $CUSTOM_PHP_INI_FILE && \
     echo "php_admin_value[memory_limit] = 1024M" >> $CUSTOM_PHP_INI_FILE && \
     echo "php_admin_value[post_max_size] = 200M" >> $CUSTOM_PHP_INI_FILE && \
-    echo "php_admin_value[upload_max_filesize] = 200M" >> $CUSTOM_PHP_INI_FILE 
+    echo "php_admin_value[upload_max_filesize] = 200M" >> $CUSTOM_PHP_INI_FILE && \
+    sed -i 's/\[global\]/\[global\]\ncgi.fix_pathinfo=0/' $CUSTOM_PHP_INI_FILE
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=60s --retries=10 CMD SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET cgi-fcgi -bind -connect 127.0.0.1:9000 || exit 1
 
