@@ -1,12 +1,11 @@
-FROM php:7.2-fpm
+FROM php:7.3-fpm
 
 LABEL maintainer="docker-dario@neomediatech.it" \ 
       org.label-schema.version=$PHP_VERSION
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Europe/Rome
-
-ENV CUSTOM_PHP_INI_FILE=/usr/local/etc/php-fpm.d/zz-docker.conf
+ENV DEBIAN_FRONTEND=noninteractive \
+    TZ=Europe/Rome \
+    CUSTOM_PHP_INI_FILE=/usr/local/etc/php-fpm.d/zz-docker.conf
 
 RUN echo $TZ > /etc/timezone && \ 
     apt-get update && \
