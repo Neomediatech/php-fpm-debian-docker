@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 RUN echo $TZ > /etc/timezone && \ 
     apt-get update && \
-    apt-get install -y libbz2-dev libpng-dev pdfgrep libfcgi-bin netcat tzdata && \
+    apt-get install -y libbz2-dev libpng-dev pdfgrep libfcgi-bin libzip-dev netcat tzdata && \
     rm -rf /var/lib/apt/lists* && \
     for mod in mysqli bz2 gd zip; do docker-php-ext-install $mod ; done && \
     echo "ping.path = /ping" >> $CUSTOM_PHP_INI_FILE && \
