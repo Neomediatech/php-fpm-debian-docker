@@ -25,6 +25,10 @@ RUN pecl bundle -d /usr/src/php/ext redis && \
     docker-php-ext-install redis
 
 RUN echo "ServerTokens Prod" > $APACHE_CONFDIR/conf-enabled/zz-custom.conf && \
-    echo "ServerSignature Off" >> $APACHE_CONFDIR/conf-enabled/zz-custom.conf
+    echo "ServerSignature Off" >> $APACHE_CONFDIR/conf-enabled/zz-custom.conf && \
+    echo '<Location "/server-status">' >> $APACHE_CONFDIR/conf-enabled/zz-custom.conf && \
+    echo "  SetHandler server-status" >> $APACHE_CONFDIR/conf-enabled/zz-custom.conf && \
+    echo "  Require  host  localhost" >> $APACHE_CONFDIR/conf-enabled/zz-custom.conf && \
+    echo "</Location>" >> $APACHE_CONFDIR/conf-enabled/zz-custom.conf 
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=10 CMD curl -sS -I localhost |head -n3 && echo "Gimme a page" || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=10 CMD curl -sS localhost/server-status?auto | grep -E "ServerVersion|RestartTime|ServerUptime:" && echo "Gimme a page" || exit 1
