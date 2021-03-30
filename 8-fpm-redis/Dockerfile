@@ -11,7 +11,7 @@ RUN echo $TZ > /etc/timezone && \
     apt-get update && apt-get -y dist-upgrade && \
     apt-get install -y libbz2-dev libpng-dev pdfgrep libfcgi-bin libzip-dev netcat tzdata && \
     rm -rf /var/lib/apt/lists* && \
-    for mod in mysqli bz2 gd zip; do docker-php-ext-install $mod ; done && \
+    for mod in mysqli bz2 gd zip pdo_mysql; do docker-php-ext-install $mod ; done && \
     echo "ping.path = /ping" >> $CUSTOM_PHP_INI_FILE && \
     echo "php_admin_value[memory_limit] = 1024M" >> $CUSTOM_PHP_INI_FILE && \
     echo "php_admin_value[post_max_size] = 200M" >> $CUSTOM_PHP_INI_FILE && \
