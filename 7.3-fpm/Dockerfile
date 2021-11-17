@@ -18,6 +18,11 @@ RUN echo $TZ > /etc/timezone && \
     echo "php_admin_value[upload_max_filesize] = 200M" >> $CUSTOM_PHP_INI_FILE && \
     echo "php_admin_value[max_execution_time] = 300" >> $CUSTOM_PHP_INI_FILE
 
+# Redis
+RUN pecl bundle -d /usr/src/php/ext redis && \
+    rm -f /usr/src/php/ext/redis-*.tgz && \
+    docker-php-ext-install redis
+
 HEALTHCHECK --interval=10s --timeout=3s --start-period=60s --retries=10 CMD SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET cgi-fcgi -bind -connect 127.0.0.1:9000 || exit 1
 
 CMD ["php-fpm"]
