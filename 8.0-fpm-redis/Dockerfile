@@ -1,0 +1,26 @@
+FROM php:8.0-fpm
+
+LABEL maintainer="docker-dario@neomediatech.it" \ 
+      org.label-schema.version=$PHP_VERSION
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    TZ=Europe/Rome \
+    CUSTOM_PHP_INI_FILE=/usr/local/etc/php-fpm.d/zz-docker.conf
+
+RUN echo $TZ > /etc/timezone && \ 
+    apt-get update && apt-get -y dist-upgrade && \
+    apt-get install -y libbz2-dev libpng-dev pdfgrep libfcgi-bin libzip-dev netcat tzdata && \
+    rm -rf /var/lib/apt/lists* && \
+    for mod in mysqli bz2 gd zip pdo_mysql; do docker-php-ext-install $mod ; done && \
+    echo "ping.path = /ping" >> $CUSTOM_PHP_INI_FILE && \
+    echo "php_admin_value[memory_limit] = 1024M" >> $CUSTOM_PHP_INI_FILE && \
+    echo "php_admin_value[post_max_size] = 200M" >> $CUSTOM_PHP_INI_FILE && \
+    echo "php_admin_value[upload_max_filesize] = 200M" >> $CUSTOM_PHP_INI_FILE && \
+    echo "php_admin_value[max_execution_time] = 300" >> $CUSTOM_PHP_INI_FILE
+
+# Redis
+RUN pecl bundle -d /usr/src/php/ext redis && \
+    rm -f /usr/src/php/ext/redis-*.tgz && \
+    docker-php-ext-install redis
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=10 CMD SCRIPT_NAME=/ping SCRIPT_FILENAME=/ping REQUEST_METHOD=GET cgi-fcgi -bind -connect 127.0.0.1:9000 || exit 1
