@@ -36,4 +36,7 @@ RUN echo "ServerTokens Prod" > $APACHE_CONFDIR/conf-enabled/zz-custom.conf && \
     echo "  Require  host  localhost" >> $APACHE_CONFDIR/conf-enabled/zz-custom.conf && \
     echo "</Location>" >> $APACHE_CONFDIR/conf-enabled/zz-custom.conf 
 
+# Rewrite engine
+RUN a2enmod rewrite
+
 HEALTHCHECK --interval=60s --timeout=5s --start-period=60s --retries=10 CMD curl -sS localhost/server-status?auto | grep -E "ServerVersion|RestartTime|ServerUptime:" && echo "Gimme a page" || exit 1
