@@ -8,8 +8,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 RUN echo $TZ > /etc/timezone && \
     apt-get update && apt-get -y dist-upgrade && \
-    apt-get install -y libbz2-dev libpng-dev pdfgrep libfcgi-bin libzip-dev netcat tzdata && \
+    apt-get install -y libbz2-dev libpng-dev pdfgrep libfcgi-bin libzip-dev netcat tzdata libjpeg-dev && \
     rm -rf /var/lib/apt/lists* && \
+    docker-php-ext-configure gd --with-jpeg=/usr/include/ && \
     for mod in mysqli bz2 gd zip pdo_mysql; do docker-php-ext-install $mod ; done && \
     echo "[PHP]" > $PHP_INI_DIR/conf.d/0-custom.ini && \
     echo "memory_limit = 1024M" >> $PHP_INI_DIR/conf.d/0-custom.ini && \
@@ -17,7 +18,8 @@ RUN echo $TZ > /etc/timezone && \
     echo "upload_max_filesize = 200M" >> $PHP_INI_DIR/conf.d/0-custom.ini && \
     echo "max_execution_time = 300" >> $PHP_INI_DIR/conf.d/0-custom.ini && \
     echo "date.timezone = $TZ" >> $PHP_INI_DIR/conf.d/0-custom.ini && \
-    echo "expose_php = Off" >> $PHP_INI_DIR/conf.d/0-custom.ini
+    echo "expose_php = Off" >> $PHP_INI_DIR/conf.d/0-custom.ini && \
+    echo "upload_tmp_dir = /tmp" >> $PHP_INI_DIR/conf.d/0-custom.ini
 
 # Redis
 RUN pecl bundle -d /usr/src/php/ext redis && \
