@@ -1,4 +1,7 @@
-# php-fpm-debian-docker
+# DO NOT USE THIS REPO ANYMORE
+use [THIS](https://github.com/Neomediatech/php) instead
+
+## php-fpm-debian-docker
 Dockerized version of php-fpm, based on original php-fpm image, but with some additional module
 
 ## There are various versions depending on needs
